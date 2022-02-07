@@ -1,0 +1,6 @@
+/arenda_site/site_app/migrations/
+../.idea/
+arenda_site/__pycache__/
+../env_project/
+arenda_site/db.sqlite3
+.idea/
