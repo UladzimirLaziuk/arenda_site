@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
+# from django.contrib.postgres.fields import ArrayField
 
 
 # Create your models here.
@@ -49,3 +49,7 @@ class Vehicle(models.Model):
 
     def __str__(self):
         return f'{self.name_brand}'
+
+
+class BotDb(models.Model):
+    group_id_bot = models.CharField(max_length=25, unique=True)

@@ -146,3 +146,7 @@ STATICFILES_DIRS = [STATIC_DIR]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SITE_ID = 1
+import telebot
+token = os.getenv('ID_TOKEN_BOT')
+
+bot = telebot.TeleBot(token)
