@@ -16,6 +16,9 @@ class Renter(models.Model):
     type_of_tractor = models.ForeignKey('Vehicle', on_delete=models.CASCADE)
     email = models.EmailField(blank=True)
 
+    def __str__(self):
+        return f'{self.name_organization}'
+
 
 class TypeService(models.Model):
     typework = models.CharField(max_length=255)
