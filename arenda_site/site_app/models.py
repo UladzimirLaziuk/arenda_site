@@ -25,7 +25,7 @@ class TypeService(models.Model):
 
 
 class Buckets(models.Model):
-    pass
+    renter_obj = models.ForeignKey('Renter', on_delete=models.CASCADE, blank=True, null=True, related_name='renter_object')
 
 
 class Communication(models.Model):
@@ -46,3 +46,8 @@ class Vehicle(models.Model):
 
     def __str__(self):
         return f'{self.name_brand}'
+
+
+
+class BotDb(models.Model):
+    group_id_bot = models.CharField(max_length=25, unique=True)
