@@ -2,9 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>List Renter</title>
 </head>
 <body>
 
+
+<h2>List Renter</h2>
+
+{% for object in object_list %}
+<table>
+    <tr>
+
+        <td>{{ object.name_organization }}</td>
+    </tr>
+    <tr>
+        <td>{{ object.phone }}</td>
+    </tr>
+    <tr>
+        <td>{{ object.type_of_tractor }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
 </body>
 </html>

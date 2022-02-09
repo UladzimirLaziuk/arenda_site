@@ -5,5 +5,5 @@ from site_app import views
 
 urlpatterns = [
     path('', views.RenterViewList.as_view()),
-
+    path('create/', views.RenterViewCreate.as_view(), name='renter_create'),
 ]
