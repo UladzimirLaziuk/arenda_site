@@ -7,9 +7,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.RenterViewList.as_view()),
-    path('create/', views.RenterViewCreate.as_view(), name='renter_create'),
+    path('create', views.RenterViewCreate.as_view(), name='renter_create'),
+    path('search', views.RenterViewSearch.as_view(), name='renter_search'),
 ]
 
 if settings.DEBUG:
-
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

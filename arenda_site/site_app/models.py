@@ -1,8 +1,24 @@
+import calendar
+import datetime
+import logging
+
 from django.db import models
 # from django.contrib.postgres.fields import ArrayField
-
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 
 # Create your models here.
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.utils import timezone
+
+from site_app.bot_telegram import send_message
+
+logging.basicConfig()
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+
 class Renter(models.Model):
     name_organization = models.CharField(max_length=255)
     phone = models.CharField(max_length=255)  # ArrayField
@@ -27,10 +43,15 @@ class TypeService(models.Model):
         return f'{self.typework}'
 
 
+class ScopeWork(models.Model):
+    scope_of_work = models.CharField(max_length=100)
+    type_work = models.ForeignKey("TypeService", on_delete=models.CASCADE)
+    scope_work_and_type = models.ForeignKey('SearchTable', on_delete=models.CASCADE, blank=True, null=True)
+
+
 class Buckets(models.Model):
     renter_obj = models.ForeignKey('Renter', on_delete=models.CASCADE, blank=True, null=True, related_name='buckets')
     size_bucket = models.CharField(max_length=20)
-
 
 
 class Communication(models.Model):
@@ -56,6 +77,35 @@ class Vehicle(models.Model):
         return f'{self.name_brand}'
 
 
-
 class BotDb(models.Model):
     group_id_bot = models.CharField(max_length=25, unique=True)
+
+
+# class WorkType(models.Model):
+#     work_type = models.ForeignKey('TypeService', on_delete=models.CASCADE)
+#     lookup_table = models.ForeignKey('SearchTable', on_delete=models.CASCADE)
+
+
+class SearchTable(models.Model):
+    client_renter = models.ForeignKey('ClientRenter', on_delete=models.CASCADE)
+    date_work = models.DateTimeField(default=timezone.now)  # period must
+    location = models.CharField(max_length=100)
+    estimated_working_time = models.TimeField(verbose_name="Прeдполагаемое время работ", blank=True, null=True)
+    text = models.CharField(max_length=255, verbose_name='Произвольный текст для видом и объемов работ', blank=True)
+    date_search = models.DateTimeField(auto_now_add=True)
+    # scope_work_and_type = models.ForeignKey('ScopeWork', on_delete=models.CASCADE, blank=True, null=True)
+
+
+class ClientRenter(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    phone = models.CharField(max_length=100)
+
+    # class Meta:
+    #     models = AbstractUser
+    #     field = ['email', 'first_name']
+
+
+@receiver(post_save, sender=SearchTable)
+def subscribe_message(sender, instance, **kwargs):
+    logger.info("Instance {}".format(instance))
+    send_message(BotDb.objects.all())

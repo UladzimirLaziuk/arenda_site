@@ -2,8 +2,8 @@ import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'arenda_site.settings')
 
 from arenda_site.settings import bot
-from site_app.models import BotDb
 
+import site_app
 import logging
 
 logging.basicConfig()
@@ -16,7 +16,7 @@ logger.setLevel(logging.INFO)
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
-    obj, _ = BotDb.objects.get_or_create(group_id_bot=message.chat.id)
+    obj, _ = site_app.models.BotDb.objects.get_or_create(group_id_bot=message.chat.id)
     bot.send_message(message.chat.id, "Привет!Ты записан в базу {}".format(message.chat.id))
 
 
