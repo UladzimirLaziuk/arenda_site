@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+{% load static %}
+{% load sorl_thumbnail %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ object.name_organization }}</title>
+</head>
+<body>
+    <h5 class="m-2">{{ object.name_organization }} </h5>
+
+</ul>
+    <ul>Location:{{ object.location }}</ul>
+
+    <ul>phone:{{ object.phone }}</ul>
+
+    <ul>price_per_hour:{{ object.price_per_hour }}</ul>
+
+    <ul>email:{{ object.email }}</ul>
+
+    <ul>delivery:{{ object.delivery }}</ul>
+
+    <div>
+        Выды работ:
+        {% for obj_type_service in object.types_of_services.all %}
+            <ul>Typework:{{ obj_type_service.typework }}</ul>
+        {% endfor %}
+
+    </div>
+
+
+<ul>
+    {% for obj in object.picture_set.all %}
+
+
+    {% thumbnail obj.img_ads "140x120" crop="center" as im %}
+    <img src="{{ im.url }}">
+    {% empty %}
+    <p>No image</p>
+    {% endthumbnail %}
+    {% endfor %}
+</ul>
+<a class="m-2" href="{% url 'renter_list' %}">Back</a>
+</body>
+</html>

@@ -5,7 +5,7 @@ from django.forms import inlineformset_factory
 
 from django import forms
 
-from site_app.models import ClientRenter, SearchTable, ScopeWork, TypeService
+from site_app.models import ClientRenter, SearchTable, ScopeWork, TypeService, Picture, Renter
 
 
 class UserForm(ModelForm):
@@ -35,4 +35,5 @@ formset_type_service = modelformset_factory(ScopeWork,
                                             fields=('type_work', 'scope_of_work'),
                                             extra=2)
 
-
+ImageFormSet = inlineformset_factory(Renter, Picture,
+                                     fields=('img_ads',), extra=1, can_delete=False)

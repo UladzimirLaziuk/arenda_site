@@ -10,9 +10,11 @@ from django.contrib.auth.models import User
 # Create your models here.
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.urls import reverse
 from django.utils import timezone
 
-from site_app.bot_telegram import send_message
+from .tasks import send_sms_task
+from sorl.thumbnail import ImageField
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -34,6 +36,9 @@ class Renter(models.Model):
 
     def __str__(self):
         return f'{self.name_organization}'
+
+    def get_absolute_url(self):
+        return reverse("renter_detail", kwargs={"pk": self.id})
 
 
 class TypeService(models.Model):
@@ -105,7 +110,15 @@ class ClientRenter(models.Model):
     #     field = ['email', 'first_name']
 
 
+class Picture(models.Model):
+    ad_link = models.ForeignKey(Renter, on_delete=models.CASCADE)
+    img_ads = ImageField(upload_to='image/', default="image/pingvin_Shkiper.jpg")
+
+
 @receiver(post_save, sender=SearchTable)
 def subscribe_message(sender, instance, **kwargs):
+    logger.info("Instance.id {}".format(instance.id))
+    logger.info("kwargs {}".format(kwargs))
+    send_sms_task.delay(instance.id)
     logger.info("Instance {}".format(instance))
-    send_message(BotDb.objects.all())
+

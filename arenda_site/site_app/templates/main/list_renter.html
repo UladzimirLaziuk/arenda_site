@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load thumbnail %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,7 +15,10 @@
 <table>
     <tr>
 
-        <td>{{ object.name_organization }}</td>
+        <td>
+            <a href="{{ object.get_absolute_url }}">{{ object.name_organization }}</a>
+
+        </td>
     </tr>
     <tr>
         <td>{{ object.phone }}</td>

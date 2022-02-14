@@ -2,16 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Create Renter</title>
+    <title>Delete Renter</title>
 </head>
 <body>
     <h2>Create renter</h2>
     <div class="m-2">
 
-<form method="post" enctype="multipart/form-data">
+<form method="post">
     {% csrf_token %}
-    <div>{{ form.as_p }}</div>
-    <div>{{ formset_img.as_p }}</div>
+    <p>Are you sure you want to delete "{{ object }}"?</p>
     <input type="submit" value="Save">
 
 </form>
