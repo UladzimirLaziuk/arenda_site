@@ -89,11 +89,14 @@ class BotDb(models.Model):
 # class WorkType(models.Model):
 #     work_type = models.ForeignKey('TypeService', on_delete=models.CASCADE)
 #     lookup_table = models.ForeignKey('SearchTable', on_delete=models.CASCADE)
+def one_day_hence():
+    return timezone.now() + timezone.timedelta(days=1)
 
 
 class SearchTable(models.Model):
     client_renter = models.ForeignKey('ClientRenter', on_delete=models.CASCADE)
-    date_work = models.DateTimeField(default=timezone.now)  # period must
+    date_start_period_work = models.DateTimeField(default=timezone.now)  # period must
+    date_end_period_work = models.DateTimeField(default=one_day_hence)
     location = models.CharField(max_length=100)
     estimated_working_time = models.TimeField(verbose_name="Прeдполагаемое время работ", blank=True, null=True)
     text = models.CharField(max_length=255, verbose_name='Произвольный текст для видом и объемов работ', blank=True)
@@ -121,4 +124,3 @@ def subscribe_message(sender, instance, **kwargs):
     logger.info("kwargs {}".format(kwargs))
     send_sms_task.delay(instance.id)
     logger.info("Instance {}".format(instance))
-

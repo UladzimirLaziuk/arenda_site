@@ -25,12 +25,14 @@ def text_for_bot(id_table):
     locale.setlocale(locale.LC_TIME, "ru_RU.utf8")
     obj = SearchTable.objects.get(pk=id_table)
     location = obj.location
-    date_work = obj.date_work.strftime("%d %B %Y")
+    date_start_period = obj.date_start_period_work.strftime("%d %B %Y")
+    date_end_period = obj.date_end_period_work.strftime("%d %B %Y")
     estimated_working_time = obj.estimated_working_time
     template_text = f'''
     Если вы получили это сообщение то срочно выезжайте
     Место проведения работ -{location}\n
-    Дата проведения работ -{date_work}\n
+    Дата начала периода проведения работ -{date_start_period}\n
+    Дата начала периода проведения работ -{date_end_period}\n
     Предполагаемое время работ - {estimated_working_time}\n
     '''
     for obj_scope in obj.scopework_set.all():

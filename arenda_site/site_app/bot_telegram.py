@@ -23,15 +23,18 @@ def start_message(message):
 
 
 def send_message(quryset, text):
+    logger.info(' send for quryset -"%s"' % quryset)
     for user_bot in quryset:
         try:
             bot.send_message(int(user_bot.group_id_bot), "Привет!сообщение {}".format(text))
+            logger.info(' send for user_bot -"%s"' % user_bot.group_id_bot)
         except Exception:
             logger.error('No ok-"%s"' % user_bot)
     logger.info('Successfully send "%s"' % 'ok')
 
 #
 # from telebot import types
+
 
 @bot.message_handler(content_types=['text'])
 def handle_text(message):

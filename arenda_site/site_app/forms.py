@@ -14,7 +14,9 @@ class UserForm(ModelForm):
         fields = 'first_name', 'last_name', 'email'
 
 
-SearchFormSet = inlineformset_factory(ClientRenter, SearchTable, fields=('date_work', 'location',
+SearchFormSet = inlineformset_factory(ClientRenter, SearchTable, fields=('date_start_period_work',
+                                                                         'date_end_period_work',
+                                                                         'location',
                                                                          'estimated_working_time',
                                                                          'text',
                                                                          ), extra=1, can_delete=False, )
