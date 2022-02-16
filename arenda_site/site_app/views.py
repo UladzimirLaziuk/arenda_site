@@ -8,7 +8,7 @@ from site_app import models
 # Create your views here.
 from site_app.forms import SearchFormSet, formset_type_service, ImageFormSet
 from site_app.models import ClientRenter, TypeService, ScopeWork
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class RenterViewList(ListView):
     model = models.Renter
@@ -49,11 +49,13 @@ class RenterViewCreate(CreateView):
         return redirect(reverse("renter_list"))
 
 
-##TODO Permission
-class RenterViewSearch(CreateView):
+
+class RenterViewSearch(LoginRequiredMixin, CreateView):
     model = models.ClientRenter
     template_name = 'main/search_renter.html'
     fields = ('phone',)
+    login_url = None
+
 
     def get_context_data(self, **kwargs):
         kwargs.update({'formset_search': SearchFormSet()})

@@ -1,7 +1,7 @@
 from celery.utils.log import get_task_logger
 import logging
 from arenda_site.celery import app
-from site_app.bot_telegram import send_message
+from site_app.bot_telegram import send_message, del_message
 
 from site_app import models
 
@@ -12,14 +12,32 @@ logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 
 @app.task(bind=True, default_retry_delay=5 * 60)
 def send_sms_task(self, data_id, *args, **kwargs):
+    date_delete = models.SearchTable.objects.get(pk=data_id).date_end_period_work
     logger.info("in task")
     data_text = text_for_bot(data_id)
-    send_message(models.BotDb.objects.all(), data_text)
+    msg_id = send_message(models.BotDb.objects.all(), data_text)
     logger.info("Send sms %s" % data_text)
+    logger.info("Message ID  %s" % msg_id)
+    obj_msgtable = models.MessageId.objects.create(message_id=msg_id, search_table_id=data_id, date_delete=date_delete)
+    logger.info("Create  %s" % obj_msgtable)
+
+
+@app.task(bind=True, default_retry_delay=5 * 60)
+def deleting_task(self, *args, **kwargs):
+    from django.utils.timezone import now#TODO Неправильно показывает ->UTC по default
+    logger.info("date task %s" % now())
+    list_message_id_for_delete = models.MessageId.objects.\
+        filter(date_delete__lte=now())\
+        .values_list('message_id', flat=True)
+
+    logger.info(f"{list_message_id_for_delete}")
+    for element_id in list_message_id_for_delete:
+        result = del_message(element_id)
+        logger.info(f'{result}')
+
 
 
 def text_for_bot(id_table):
-
     from site_app.models import SearchTable
     import locale
     locale.setlocale(locale.LC_TIME, "ru_RU.utf8")

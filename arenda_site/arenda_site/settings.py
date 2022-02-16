@@ -154,6 +154,6 @@ token = os.getenv('ID_TOKEN_BOT')
 bot = telebot.TeleBot(token)
 
 CELERY_IMPORTS = ("site_app.tasks",)
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://127.0.0.1:6380/0")
-CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND", "redis://127.0.0.1:6380/0")
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://127.0.0.1:6381/0")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND", "redis://127.0.0.1:6381/0")
 

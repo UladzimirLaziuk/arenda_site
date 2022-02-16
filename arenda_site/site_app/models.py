@@ -118,6 +118,12 @@ class Picture(models.Model):
     img_ads = ImageField(upload_to='image/', default="image/pingvin_Shkiper.jpg")
 
 
+class MessageId(models.Model):
+    message_id = models.CharField(max_length=20)
+    search_table_id = models.CharField(max_length=20)
+    date_delete = models.CharField(max_length=20)
+
+
 @receiver(post_save, sender=SearchTable)
 def subscribe_message(sender, instance, **kwargs):
     logger.info("Instance.id {}".format(instance.id))
