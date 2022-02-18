@@ -1,0 +1,14 @@
+DEBUG=1
+SECRET_KEY = 'django-insecure-zfm1cfo=yorj9h-%l(zq!pr=td7cx337c+!_+mm#b+9uq=*uzr'
+DJANGO_ALLOWED_HOSTS=*
+
+SQL_ENGINE=django.db.backends.postgresql
+SQL_DATABASE='arendadb'
+SQL_USER='userdjango'
+SQL_PASSWORD='userdjango'
+SQL_HOST=db
+SQL_PORT=5432
+
+CELERY_BROKER=redis://redis:6379/0
+CELERY_BACKEND=redis://redis:6379/0
+ID_TOKEN_BOT='5112108423:AAGT_AKVeuyF8ZvyllqzfFdrft5dYKsjOYg'
