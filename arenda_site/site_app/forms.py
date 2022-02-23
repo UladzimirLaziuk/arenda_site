@@ -35,7 +35,7 @@ def count_extra():
 formset_type_service = modelformset_factory(ScopeWork,
 
                                             fields=('type_work', 'scope_of_work'),
-                                            extra=2)
+                                            extra=5)
 
 ImageFormSet = inlineformset_factory(Renter, Picture,
                                      fields=('img_ads',), extra=1, can_delete=False)

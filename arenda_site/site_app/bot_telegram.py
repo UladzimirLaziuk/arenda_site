@@ -33,8 +33,9 @@ def send_message(quryset, text):
             logger.info(' send for user_bot -"%s"' % user_bot.group_id_bot)
         except Exception:
             logger.error('No ok-"%s"' % user_bot)
-    logger.info('Successfully send "%s"' % 'ok')
-    return msg.message_id
+        logger.info('Successfully send "%s"' % 'ok')
+        return msg.message_id
+    return None
 
 #
 # from telebot import types

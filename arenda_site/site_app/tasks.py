@@ -18,8 +18,11 @@ def send_sms_task(self, data_id, *args, **kwargs):
     msg_id = send_message(models.BotDb.objects.all(), data_text)
     logger.info("Send sms %s" % data_text)
     logger.info("Message ID  %s" % msg_id)
-    obj_msgtable = models.MessageId.objects.create(message_id=msg_id, search_table_id=data_id, date_delete=date_delete)
-    logger.info("Create  %s" % obj_msgtable)
+    if msg_id:
+        obj_msgtable = models.MessageId.objects.create(message_id=msg_id, search_table_id=data_id, date_delete=date_delete)
+        logger.info("Create  %s" % obj_msgtable)
+    else:
+        logger.info("No address sms ")
 
 
 @app.task(bind=True, default_retry_delay=5 * 60)
@@ -39,8 +42,8 @@ def deleting_task(self, *args, **kwargs):
 
 def text_for_bot(id_table):
     from site_app.models import SearchTable
-    import locale
-    locale.setlocale(locale.LC_TIME, "ru_RU.utf8")
+    # import locale
+    # locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')#TODO
     obj = SearchTable.objects.get(pk=id_table)
     location = obj.location
     date_start_period = obj.date_start_period_work.strftime("%d %B %Y")

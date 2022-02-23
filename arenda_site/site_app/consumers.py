@@ -6,7 +6,6 @@ from channels.consumer import AsyncConsumer
 from site_app.models import Renter
 import logging
 
-
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -22,9 +21,13 @@ class EchoConsumerAsync(AsyncConsumer):
 
     async def websocket_receive(self, event):
         logger.info('websocket_receive')
-        print(event)
         text_data_json = json.loads(event['text'])
-        message = text_data_json["message"]
+        if text_data_json.get("message"):
+            message = text_data_json["message"]
+            logger.info('message %s' % message)
+        else:
+            logger.info('message None')
+            message = None
         datetime_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         ads_title, index = await query_asinc(message)
         text_data = json.dumps({

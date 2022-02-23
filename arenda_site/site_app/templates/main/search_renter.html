@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+{% load static %}
+{% load formset_add_style_hide %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,13 +16,24 @@
         <div>{{ formset_search.as_p }}</div>
 
         {{ formset_type_service.management_form }}
+        <script type="text/javascript" src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js_scripts/scripts_add_work_type.js' %}"></script>
         {% for form in formset_type_service %}
 
-        <div>{{form.type_work}}: {{ form.scope_of_work }}</div>
 
+            {% if forloop.counter > 2 %}
+                <div hidden id="forms_{{ forloop.counter }}">{{form.type_work}}: {{ form.scope_of_work }}</div>
+            {% else %}
+                <div  id="rf_{{ forloop.counter }}">{{form.type_work}}: {{ form.scope_of_work }}</div>
+
+            {% endif %}
         {% endfor %}
-
-        <div><input type="submit" value="Save"></div>
+        <div>
+            <button type="button" id="add_work">Add work</button>
+        </div>
+        <div>
+            <input type="submit" value="Save">
+        </div>
 
     </form>
 </div>
