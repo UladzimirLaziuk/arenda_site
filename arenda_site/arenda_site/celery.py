@@ -14,7 +14,7 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 app.conf.beat_schedule = {
     'Delete Message': {
         'task': "site_app.tasks.deleting_task",
-        "schedule": crontab(),#crontab(minute=0, hour=0),
+        "schedule": crontab(minute=0, hour=0),
     },
 }
 # app.conf.timezone = arenda_site.settings.TIME_ZONE

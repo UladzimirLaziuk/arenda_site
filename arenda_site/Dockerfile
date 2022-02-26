@@ -32,3 +32,5 @@ RUN pip install -r /usr/src/requirements.txt
 COPY . /usr/src/
 RUN python manage.py collectstatic --noinput
 
+# run gunicorn
+CMD gunicorn arenda_site.wsgi:application --bind 0.0.0.0:$PORT
