@@ -2,8 +2,7 @@ const chatSocket = new WebSocket(
     'ws://'
     + window.location.host
     + '/ws/bot/'
-    + '/'
-);
+    );
 
 chatSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
