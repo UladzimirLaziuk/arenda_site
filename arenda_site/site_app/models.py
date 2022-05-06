@@ -23,11 +23,11 @@ logger.setLevel(logging.INFO)
 
 class Renter(models.Model):
     name_organization = models.CharField(max_length=255)
-    phone = models.CharField(max_length=255)  # ArrayField
+    # phone = models.CharField(max_length=255)  # ArrayField
     location = models.CharField(max_length=255)  # modul
     # types_of_services = ArrayField(models.CharField(max_length=255, blank=True), default=list)
     types_of_services = models.ManyToManyField('TypeService', blank=True)  # OR Arrayfield
-    delivery = models.PositiveIntegerField(null=True, default=0)
+    delivery = models.PositiveIntegerField(null=True, default=0, blank=True)
     price_per_hour = models.PositiveIntegerField()
     # types_of_buckets = models.ForeignKey('Buckets', on_delete=models.SET_NULL, blank=True, null=True)
     # other_types_of_communication = models.ManyToManyField('Communication', blank=True)  # ??Choises
@@ -39,6 +39,27 @@ class Renter(models.Model):
 
     def get_absolute_url(self):
         return reverse("renter_detail", kwargs={"pk": self.id})
+
+
+class Balance(models.Model):
+    object_balance = models.OneToOneField(Renter, on_delete=models.CASCADE, primary_key=True)
+    balance = models.DecimalField(max_digits=5, decimal_places=2, null=True, default=0)
+
+
+class PhoneRenter(models.Model):
+    rent_phone = models.ForeignKey(Renter, on_delete=models.CASCADE,
+                                   verbose_name='Телефон')
+    phone = models.CharField(max_length=255)
+
+class RenterPicture(models.Model):
+    object_ads = models.ForeignKey(Renter, on_delete=models.CASCADE,
+                                   verbose_name='Объект объявления', related_name='renter_picture')
+    img_url = models.ImageField(verbose_name='Фото объявления', default='')
+
+    class Meta:
+        verbose_name = "Фото объявления"
+        verbose_name_plural = "Фото объявлений"
+
 
 
 class TypeService(models.Model):
@@ -64,22 +85,21 @@ class Communication(models.Model):
     phone = models.CharField(max_length=255)
 
 
-class AdditionalEquipment(models.Model):
-    equipment = models.ForeignKey('Renter', on_delete=models.CASCADE)
-    type_equipment = models.CharField(max_length=1)
-
-
 class Vehicle(models.Model):
     name_brand = models.CharField(max_length=255)
-    additional_equipment = models.ForeignKey('AdditionalEquipment', on_delete=models.SET_NULL, blank=True,
-                                             null=True)  # Arrayfield
-    renter = models.ForeignKey('Renter', on_delete=models.CASCADE)
+    renter = models.ForeignKey(Renter, on_delete=models.CASCADE)
     weight = models.CharField(max_length=50)
     max_digging_depth = models.CharField(max_length=50)  # string or float
     vehicle_height = models.CharField(max_length=50)
 
     def __str__(self):
         return f'{self.name_brand}'
+
+class AdditionalEquipment(models.Model):
+    description = models.CharField(max_length=100, default='Ковш')
+    equipment = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
+    width = models.PositiveIntegerField(verbose_name='Ширина ковша')
+
 
 
 class BotDb(models.Model):

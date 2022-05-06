@@ -38,7 +38,7 @@ CSRF_TRUSTED_ORIGINS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'channels',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,17 +50,17 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
 
 ]
-
-ASGI_APPLICATION = 'arenda_site.asgi.application'
-# docker run -p 6379:6379 -d redis:5
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('REDIS_URL', 6379)],
-        },
-    },
-}
+#
+# ASGI_APPLICATION = 'arenda_site.asgi.application'
+# # docker run -p 6379:6379 -d redis:5
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('REDIS_URL', 6379)],
+#         },
+#     },
+# }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

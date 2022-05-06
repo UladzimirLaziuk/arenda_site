@@ -5,7 +5,8 @@ from django.forms import inlineformset_factory
 
 from django import forms
 
-from site_app.models import ClientRenter, SearchTable, ScopeWork, TypeService, Picture, Renter
+from site_app.models import ClientRenter, SearchTable, ScopeWork, TypeService, Picture, Renter, Vehicle, \
+    AdditionalEquipment, PhoneRenter
 
 
 class UserForm(ModelForm):
@@ -35,7 +36,17 @@ def count_extra():
 formset_type_service = modelformset_factory(ScopeWork,
 
                                             fields=('type_work', 'scope_of_work'),
-                                            extra=5)
+                                            extra=1)
 
 ImageFormSet = inlineformset_factory(Renter, Picture,
                                      fields=('img_ads',), extra=1, can_delete=False)
+
+VehicleFormSet = inlineformset_factory(Renter, Vehicle, fields=('name_brand', 'weight', 'max_digging_depth', 'vehicle_height'),
+                                     extra=1, can_delete=False)
+
+PhoneFormSet = inlineformset_factory(Renter, PhoneRenter, fields=('phone',),
+                                     extra=1, can_delete=False)
+
+AdditionalFormSet = inlineformset_factory(Vehicle, AdditionalEquipment, fields=('description', 'width'),
+                                     extra=1, can_delete=False)
+

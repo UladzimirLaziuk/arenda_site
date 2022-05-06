@@ -1,20 +1,31 @@
-<!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Create Renter</title>
 </head>
+<link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
 <body>
+
     <h2>Create renter</h2>
     <div class="m-2">
 
-<form method="post" enctype="multipart/form-data">
+<form method="post" class= 'form' enctype="multipart/form-data">
     {% csrf_token %}
     <div>{{ form.as_p }}</div>
     <div>{{ formset_img.as_p }}</div>
+    <div>{{ formset_vehicle.as_p }}</div>
+    <div>{{ formset_additional.as_p }}</div>
+    <div>{{ formset_phone.as_p }}</div>
+
+<!--    <input type="text" name="phone" class="amount" placeholder="add phone">-->
+    <div class="add">+</div>
     <input type="submit" value="Save">
 
 </form>
 </div>
+
+
+<script src="{% static 'js_scripts/pr.js' %}"></script>
 </body>
 </html>

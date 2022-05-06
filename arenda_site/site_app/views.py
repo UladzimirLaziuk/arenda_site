@@ -6,7 +6,8 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, D
 from site_app import models
 
 # Create your views here.
-from site_app.forms import SearchFormSet, formset_type_service, ImageFormSet
+from site_app.forms import SearchFormSet, formset_type_service, ImageFormSet, VehicleFormSet, PhoneFormSet, \
+    AdditionalFormSet
 from site_app.models import ClientRenter, TypeService, ScopeWork
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -21,10 +22,14 @@ class RenterViewCreate(CreateView):
     fields = '__all__'
 
     def get_context_data(self, **kwargs):
-        kwargs.update({'formset_img': ImageFormSet()})
+        kwargs.update({'formset_img': ImageFormSet()})  # initial
+        kwargs.update({'formset_vehicle': VehicleFormSet()})
+        kwargs.update({'formset_phone': PhoneFormSet()})
+        kwargs.update({'formset_additional': AdditionalFormSet()})
         return super().get_context_data(**kwargs)
 
     def post(self, request, *args, **kwargs):
+        print(request.POST)
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         formset_img = ImageFormSet(self.request.POST, self.request.FILES)
@@ -101,6 +106,9 @@ class RenterUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         kwargs.update({'formset_img': ImageFormSet()})  # initial
+        kwargs.update({'formset_vehicle': VehicleFormSet()})
+        kwargs.update({'formset_phone': PhoneFormSet()})
+        kwargs.update({'formset_additional': AdditionalFormSet()})
         return super().get_context_data(**kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -139,4 +147,4 @@ class RenterDetailView(DetailView):
     model = models.Renter
     fields = '__all__'
     template_name = 'main/detail_renter.html'
-    success_url = "/"
+    # success_url = "/"
