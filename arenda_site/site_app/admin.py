@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from site_app.models import Renter, Vehicle, ClientRenter, SearchTable, AdditionalEquipment, Communication, Buckets, \
-    TypeService, ScopeWork, RenterPicture, PhoneRenter
+    TypeService, ScopeWork, RenterPicture, PhoneRenter, Picture, RenterPicture
 
 
 class RenterPictureAdmin(admin.StackedInline):

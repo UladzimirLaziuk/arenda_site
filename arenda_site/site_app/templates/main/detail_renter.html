@@ -4,42 +4,63 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ object.name_organization }}</title>
+    <title>{{ object.renter_ad.name_organization }}</title>
 </head>
 <body>
-    <h5 class="m-2">{{ object.name_organization }} </h5>
+    <h3 class="m-2">{{ object.renter_ad.name_organization }} </h3>
 
 </ul>
-    <ul>Location:{{ object.location }}</ul>
+    <ul>
+    {% for obj in object.pictureadrenter_set %}
 
-    <ul>phone:{{ object.phone }}</ul>
 
-    <ul>price_per_hour:{{ object.price_per_hour }}</ul>
+        {% thumbnail obj.img_ads "190x160" crop="center" as im %}
+        <img src="{{ im.url }}">
+    {% empty %}
+        <p>No image</p>
+    {% endthumbnail %}
+    {% endfor %}
+</ul>
+    <ul>Descriptions :{{ object.description }}</ul>
+    <ul>Location:{{ object.region_work }}</ul>
+    {% for phone in object.phonead_set %}
+        <ul>phone:{{ phone.phone_ad_renter }}</ul>
+    {% endfor %}
 
-    <ul>email:{{ object.email }}</ul>
+    <ul>price_per_hour:{{ object.price_per_hour_from }}</ul>
+    <ul>price_per_hour:{{ object.price_per_hour_to }}</ul>
+
+    <ul>price per shift :{{ object.price_per_shift_from }}</ul>
+
+    <ul>min work time :{{ object.min_work_time }}</ul>
+
+    <ul>work weekends time :{{ object.work_weekends_time }}</ul>
+
+
+
+    <ul>email:{{ object.renter_ad.email }}</ul>
 
     <ul>delivery:{{ object.delivery }}</ul>
-
+    <div>
+        Vehicle:
+            <ul>name_brand:{{ object.vehicle_ad.name_brand }}</ul>
+            {% for buck in object.vehicle_ad.buckets_set %}
+                <ul>buckets:{{ buck.width }}</ul>
+            {% endfor %}
+            <ul>weight Vehicle :{{ object.vehicle_ad.weight }}</ul>
+            <ul>max digging depth Vehicle :{{ object.vehicle_ad.max_digging_depth_first }}</ul>
+            <ul>vehicle_height :{{ object.vehicle_ad.vehicle_height }}</ul>
+    </div>
     <div>
         Выды работ:
-        {% for obj_type_service in object.types_of_services.all %}
+        {% for obj_type_service in object.renter_ad.types_of_services.all %}
             <ul>Typework:{{ obj_type_service.typework }}</ul>
         {% endfor %}
 
     </div>
 
 
-<ul>
-    {% for obj in object.picture_set.all %}
 
-
-    {% thumbnail obj.img_ads "140x120" crop="center" as im %}
-    <img src="{{ im.url }}">
-    {% empty %}
-    <p>No image</p>
-    {% endthumbnail %}
-    {% endfor %}
-</ul>
-<a class="m-2" href="{% url 'renter_list' %}">Back</a>
+<a class="m-2" href="{% url 'renter_ads_list' %}">Back</a>
 </body>
 </html>

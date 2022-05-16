@@ -46,8 +46,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "site_app",
-
+    'rest_framework',
     'sorl.thumbnail',
+    'django.contrib.humanize',
+    'phonenumber_field',
 
 ]
 #

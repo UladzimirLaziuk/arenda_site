@@ -1,0 +1,30 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+      {% block title %}
+      {% endblock title %}
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+		
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="{% static 'css/style.css' %}">
+  </head>
+  <body>
+		
+		<div class="wrapper d-flex align-items-stretch">
+			{% include 'includes/navbar_clients.html' %}
+
+        <!-- Page Content  -->
+             {% block content %}
+             {% endblock content%}
+        </div>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+  </body>
+</html>

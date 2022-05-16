@@ -41,12 +41,12 @@ formset_type_service = modelformset_factory(ScopeWork,
 ImageFormSet = inlineformset_factory(Renter, Picture,
                                      fields=('img_ads',), extra=1, can_delete=False)
 
-VehicleFormSet = inlineformset_factory(Renter, Vehicle, fields=('name_brand', 'weight', 'max_digging_depth', 'vehicle_height'),
+VehicleFormSet = inlineformset_factory(Renter, Vehicle, fields=('name_brand', 'weight', 'max_digging_depth_first', 'vehicle_height'),
                                      extra=1, can_delete=False)
 
 PhoneFormSet = inlineformset_factory(Renter, PhoneRenter, fields=('phone',),
                                      extra=1, can_delete=False)
 
-AdditionalFormSet = inlineformset_factory(Vehicle, AdditionalEquipment, fields=('description', 'width'),
+AdditionalFormSet = inlineformset_factory(Vehicle, AdditionalEquipment, fields=('description', 'params'),
                                      extra=1, can_delete=False)
 
