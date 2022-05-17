@@ -8,7 +8,7 @@ class PictureAdSerializer(serializers.ModelSerializer):
         fields = "img_ads",
 
 class RenterSerializer(serializers.ModelSerializer):
-    types_of_services = serializers.StringRelatedField(many=True)
+
     class Meta:
         model = Renter
         fields = "__all__"
@@ -39,6 +39,7 @@ class MyRenterAdSerializer(serializers.ModelSerializer):
     abs_url = serializers.SerializerMethodField()
     renter_ad = RenterSerializer(read_only=True)
     vehicle_ad = VehicleSerializer(read_only=True)
+    types_of_services = serializers.StringRelatedField(many=True)
 
 
     # tags = serializers.ListField(child=serializers.CharField(required=False))  # TODO
