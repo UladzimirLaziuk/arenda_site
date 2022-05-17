@@ -1,6 +1,10 @@
-<!DOCTYPE html>
+{% extends "main/base.html" %}
 {% load static %}
+{% load sample_tag_filter %}
 {% load thumbnail %}
+
+
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,26 +14,134 @@
 
 
 <h2>List Renter</h2>
+{% block content %}
+<div>
+    <div>
+{% for object in object_list.results %}
 
-{% for object in object_list %}
-<table>
-    <tr>
+<div id="content" class="p-4 p-md-5 pt-5">
 
-        <td>
-            <a href="{{ object.get_absolute_url }}">{{ object.name_organization }}</a>
+    <div class="product-item-line-card">
+        <div class="catalog-item">
+            {% for img in object.pictureadrenter_set %}
+            {% thumbnail img.img_ads "190x160" crop="center" as im %}
+            <a class="catalog-item__link" href="{{ img.img_ads }}"
+               aria-label="{{ object.title }}">
 
-        </td>
-    </tr>
-    <tr>
-        <td>{{ object.phone }}</td>
-    </tr>
-    <tr>
-        <td>{{ object.type_of_tractor }}</td>
-    </tr>
+                <img src="{{ im.url }}"
+                     class="catalog-item__img" alt=""
+                     title="{{ object.title }}"
+                     loading="lazy">
+
+            </a>
+            {% empty %}
+                <p>No image</p>
+            {% endthumbnail %}
+            {% endfor %}
+            <div class="catalog-item__body">
+                <h3 class="entry-title">
+                    <a class="catalog-item__title-link" href="{{ object.abs_url }}">{{ object.title }}</a>
+                </h3>
+                <div class="description_wrapper">
+                    <ul>Descriptions :<br>{{ object.description }}</ul>
+                    </div>
+                <div class="region_work_wrapper">
+                  <ul>Location: <br>{{ object.region_work }}</ul>
+                    </div>
+                <div class="price-per-hour-wrapper">
+                    <div class="price-per-hour-from">
+                        Цена за час:
+                    </div>
+                    <div class="price-per-hour-from-value">
+                        <span class="prefix-amount">от</span>
+                        <span class="amount">{{ object.price_per_hour_from }}</span>
+                        <span class="currency">руб.</span>
+                    </div>
+                    <div class="price-per-shift-name">
+                        Цена за смену:
+                    </div>
+                    <div class="price-per-shift-value">
+                        <span class="prefix-amount">от</span>
+                        <span class="amount">{{ object.price_per_shift_from }}</span>
+                        <span class="currency">руб.</span>
+                    </div>
+                </div><!-- .price-per-shift-wrapper -->
+                <div class="shipping-cost-wrapper">
+                    <div class="shipping-cost-name">
+                        Цена за доставку:
+                    </div>
+                    <div class="shipping-cost-value">
+                        <span class="amount">Договорная</span>
+                    </div>
+                </div><!-- .shipping-cost-wrapper -->
+                <div class="specifications-wrapper">
+                    <span class="specifications-button specifications-open">Тех. характеристики</span>
+                    <ul class="specifications-list" style="display: block;">
+<!--                        <li class="specifications-item"><span-->
+<!--                                class="specifications-item-name">Габариты: длина, мм</span><span-->
+<!--                                class="specifications-item-value">3840</span></li>-->
+<!--                        <li class="specifications-item"><span-->
+<!--                                class="specifications-item-name">Габариты: ширина, мм</span><span-->
+<!--                                class="specifications-item-value">1250</span></li>-->
+                        <li class="specifications-item"><span
+                                class="specifications-item-name">Габариты: высота, мм</span><span
+                                class="specifications-item-value"> {{ object.vehicle_ad.vehicle_height }}</span></li>
+                        <li class="specifications-item"><span class="specifications-item-name">Эксплуатационная масса:</span><span
+                                class="specifications-item-value"> {{ object.vehicle_ad.weight }}, {{ object.weight_units }}</span></li>
+                        {% if object.vehicle_ad.buckets_set %}
+                        <li class="specifications-item">
+                            <span class="specifications-item-name">Размеры ковшей:</span>
+                             {% join_buck object.vehicle_ad.buckets_set %}
+                            {% endif %}
+                        </li>
+                        <li class="specifications-item">
+                        <span class="specifications-item-name">Максимальная глубина копания, м</span>
+                        <span class="specifications-item-value"> {{ object.vehicle_ad.max_digging_depth_first }}</span></li>
+
+                    </ul>
+                </div>
+                <div id="bxdynamic_area_1444_start" style="display:none"></div>
+                <div id="bxdynamic_area_1444_end" style="display:none"></div>
+                <div class="rent-button-wrapper pt-0">
+                    <button class="btn btn__prcolor btn__rentEquipment" data-toggle="modal" data-target="#rentEquipment"
+                            data-name="{{ object.vehicle_ad.name_brand }}">Заказать
+                    </button>
+                </div>
+            </div><!-- .catalog-item__body -->
+        </div>
+    </div>
+</div>
+{% endfor %}
+</div>
+{% if object_list.page_size %}
+{% range_page_pagination object_list.page object_list.total  as range_page_template%}
+<div>
+<div class="list-search__pagination pagination-search">{{ objects_list.page_obj.number }}
+    {% if object_list.links.previous %}
+
+    <a href="{{ object_list.links.previous }}" class="pagination-search__arrow pagination-search__arrow_prev">
+        <img src="{% static 'img/icons/p-left.svg' %}">Prev
+    </a>
+    {% endif %}
+    {% for page in range_page_template %}
+    {% if object_list.page == page %}
+    <a class="pagination-search__item pagination-search__item_active">{{ page }}</a>
+    {% else %}
+    <a href="?page={{ page }}" class="pagination-search__item">{{ page }}</a>
+    {% endif %}
+
     {% endfor %}
 
-</table>
+    {% if object_list.links.next %}
+    <a href="{{ object_list.links.next}}" class="pagination-search__arrow pagination-search__arrow_next">Next
+        <img src="{% static 'img/icons/p-right.svg' %}">
+    </a>
+    {% endif %}
 
+</div>
+{% endif %}
+</div>
+    </div>
+{% endblock content %}
 
 </body>
-</html>

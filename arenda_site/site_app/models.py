@@ -1,6 +1,8 @@
 import calendar
 import datetime
 import logging
+import os
+import urllib
 
 from django.db import models
 # from django.contrib.postgres.fields import ArrayField
@@ -16,6 +18,8 @@ from django.utils import timezone
 from .tasks import send_sms_task
 from sorl.thumbnail import ImageField
 
+from phonenumber_field.modelfields import PhoneNumberField
+
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -26,9 +30,9 @@ class Renter(models.Model):
     # phone = models.CharField(max_length=255)  # ArrayField
     location = models.CharField(max_length=255)  # modul
     # types_of_services = ArrayField(models.CharField(max_length=255, blank=True), default=list)
-    types_of_services = models.ManyToManyField('TypeService', blank=True)  # OR Arrayfield
-    delivery = models.PositiveIntegerField(null=True, default=0, blank=True)
-    price_per_hour = models.PositiveIntegerField()
+
+    # delivery = models.PositiveIntegerField(null=True, default=0, blank=True)
+    # price_per_hour = models.PositiveIntegerField()
     # types_of_buckets = models.ForeignKey('Buckets', on_delete=models.SET_NULL, blank=True, null=True)
     # other_types_of_communication = models.ManyToManyField('Communication', blank=True)  # ??Choises
     # type_of_tractor = models.ForeignKey('Vehicle', on_delete=models.CASCADE)
@@ -51,6 +55,7 @@ class PhoneRenter(models.Model):
                                    verbose_name='Телефон')
     phone = models.CharField(max_length=255)
 
+
 class RenterPicture(models.Model):
     object_ads = models.ForeignKey(Renter, on_delete=models.CASCADE,
                                    verbose_name='Объект объявления', related_name='renter_picture')
@@ -59,7 +64,6 @@ class RenterPicture(models.Model):
     class Meta:
         verbose_name = "Фото объявления"
         verbose_name_plural = "Фото объявлений"
-
 
 
 class TypeService(models.Model):
@@ -75,31 +79,38 @@ class ScopeWork(models.Model):
     scope_work_and_type = models.ForeignKey('SearchTable', on_delete=models.CASCADE, blank=True, null=True)
 
 
-class Buckets(models.Model):
-    renter_obj = models.ForeignKey('Renter', on_delete=models.CASCADE, blank=True, null=True, related_name='buckets')
-    size_bucket = models.CharField(max_length=20)
-
-
 class Communication(models.Model):
     other_types_of_communication = models.ForeignKey('Renter', on_delete=models.CASCADE)
     phone = models.CharField(max_length=255)
 
 
 class Vehicle(models.Model):
-    name_brand = models.CharField(max_length=255)
+
+    name_brand = models.CharField(max_length=255, blank=True)
     renter = models.ForeignKey(Renter, on_delete=models.CASCADE)
-    weight = models.CharField(max_length=50)
-    max_digging_depth = models.CharField(max_length=50)  # string or float
-    vehicle_height = models.CharField(max_length=50)
+    # weight = models.DecimalField(max_digits=10, decimal_places=4, blank=True, null=True, default=0)
+    weight = models.FloatField(null=True, blank=True, default=None)
+    weight_units = models.CharField(max_length=50, blank=True, null=True)
+
+    max_digging_depth_first = models.FloatField(null=True, blank=True, default=0.0)
+    max_digging_depth_second = models.FloatField(null=True, blank=True, default=0.0)
+    # max_digging_depth = models.CharField(max_length=50, blank=True, null=True)  # string or float
+    vehicle_height = models.FloatField(null=True, blank=True, default=0.0)
 
     def __str__(self):
         return f'{self.name_brand}'
 
-class AdditionalEquipment(models.Model):
-    description = models.CharField(max_length=100, default='Ковш')
-    equipment = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
-    width = models.PositiveIntegerField(verbose_name='Ширина ковша')
 
+class AdditionalEquipment(models.Model):
+    description = models.CharField(max_length=100)
+    vehicle_equipment = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
+    params = models.PositiveIntegerField(verbose_name='Параметр оборудования', blank=True, null=True)
+
+
+class Buckets(models.Model):
+    description = models.CharField(max_length=100, default='Ковш')
+    vehicle_object = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
+    width = models.PositiveIntegerField(verbose_name='Ширина ковша')
 
 
 class BotDb(models.Model):
@@ -142,6 +153,50 @@ class MessageId(models.Model):
     message_id = models.CharField(max_length=20)
     search_table_id = models.CharField(max_length=20)
     date_delete = models.CharField(max_length=20)
+
+
+class RenterAd(models.Model):
+    title = models.CharField(max_length=255)
+    renter_ad = models.ForeignKey(Renter, on_delete=models.CASCADE)
+    vehicle_ad = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
+    description = models.TextField()
+    price_per_hour_from_float = models.FloatField(null=True, blank=True, default=None)
+    price_per_hour_to_float = models.FloatField(null=True, blank=True, default=None)
+
+    price_per_hour_from = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, default=0)
+    price_per_hour_to = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, default=0)
+
+    price_per_shift_from = models.FloatField(null=True, blank=True, default=None)
+    price_per_shift_to = models.FloatField(null=True, blank=True, default=None)
+
+    min_work_time = models.PositiveIntegerField(blank=True, null=True, default=0)
+    work_weekends_time = models.CharField(max_length=255, blank=True, null=True)
+    work_time = models.CharField(max_length=255, blank=True, null=True)
+    place_work = models.CharField(max_length=255, blank=True, null=True)
+    region_work = models.CharField(max_length=255, blank=True, null=True)
+    delivery = models.CharField(max_length=255, blank=True, null=True)
+    date_publication = models.DateTimeField(auto_now_add=True, blank=True, verbose_name='Дата публикации')
+    types_of_services = models.ManyToManyField('TypeService', blank=True)
+
+    def get_absolute_url(self):
+        return reverse('renterad_detail', args=[str(self.pk)])
+
+
+def get_name_photo(url):
+    basename_path = url.split('?')[0]
+    return os.path.basename(basename_path)
+
+
+class PhoneAd(models.Model):
+    ad_renter = models.ForeignKey(RenterAd, on_delete=models.CASCADE)
+    phone_ad_renter = PhoneNumberField()
+
+
+class PictureAdRenter(models.Model):
+    ad_link = models.ForeignKey(RenterAd, on_delete=models.CASCADE)
+    img_url = models.URLField(verbose_name='Фото url объявления', default='')
+    smile_img_url = models.URLField(verbose_name='Фото smile url объявления', blank=True, null=True)
+    img_ads = ImageField(upload_to='image/', default="")
 
 
 @receiver(post_save, sender=SearchTable)
